@@ -4,7 +4,9 @@ import 'package:ai_meal_planner/services/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  final UserProfile? initialProfile;
+
+  const UserProfileScreen({super.key, this.initialProfile});
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -44,7 +46,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return ScreenLayout(
       title: 'User Profile',
       showSignOutButton: true,
-      child: UserProfileForm(onProfileCreated: _onProfileCreated),
+      child: UserProfileForm(
+        initialProfile: widget.initialProfile,
+        onProfileCreated: _onProfileCreated,
+      ),
     );
   }
 }

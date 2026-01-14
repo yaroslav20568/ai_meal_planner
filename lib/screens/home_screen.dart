@@ -51,9 +51,17 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _navigateToProfile() {
+  void _navigateToGenerate() {
     if (_userProfile != null) {
       Navigator.of(context).pushNamed('/generate', arguments: _userProfile);
+    } else {
+      Navigator.of(context).pushNamed('/profile');
+    }
+  }
+
+  void _navigateToEditProfile() {
+    if (_userProfile != null) {
+      Navigator.of(context).pushNamed('/profile', arguments: _userProfile);
     } else {
       Navigator.of(context).pushNamed('/profile');
     }
@@ -110,16 +118,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                     const SizedBox(height: 48),
                     Button(
-                      text: _userProfile != null
-                          ? 'Generate Meal Plan'
-                          : 'Get Started',
-                      onPressed: _navigateToProfile,
+                      text: 'Generate Meal Plan',
+                      onPressed: _navigateToGenerate,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
                         vertical: 16,
                       ),
                       fontSize: 18,
                     ),
+                    if (_userProfile != null) ...[
+                      const SizedBox(height: 16),
+                      Button(
+                        text: 'Edit Profile',
+                        onPressed: _navigateToEditProfile,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        fontSize: 18,
+                      ),
+                    ],
                   ],
                 ),
               ),

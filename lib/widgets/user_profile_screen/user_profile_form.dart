@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:ai_meal_planner/models/index.dart';
+import 'package:ai_meal_planner/services/index.dart';
 import 'package:ai_meal_planner/utils/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
 
 class UserProfileForm extends StatefulWidget {
+  final UserProfile? initialProfile;
   final ValueChanged<UserProfile> onProfileCreated;
 
-  const UserProfileForm({super.key, required this.onProfileCreated});
+  const UserProfileForm({
+    super.key,
+    this.initialProfile,
+    required this.onProfileCreated,
+  });
 
   @override
   State<UserProfileForm> createState() => _UserProfileFormState();
@@ -14,16 +20,17 @@ class UserProfileForm extends StatefulWidget {
 
 class _UserProfileFormState extends State<UserProfileForm> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _weightController = TextEditingController();
-  final _heightController = TextEditingController();
+  final _authService = AuthService();
+  late final TextEditingController _nameController;
+  late final TextEditingController _ageController;
+  late final TextEditingController _weightController;
+  late final TextEditingController _heightController;
 
-  String _gender = 'Male';
-  String _activityLevel = 'Moderate';
-  String _goal = 'Maintenance';
-  final List<String> _dietaryRestrictions = [];
-  final List<String> _allergies = [];
+  late String _gender;
+  late String _activityLevel;
+  late String _goal;
+  late final List<String> _dietaryRestrictions;
+  late final List<String> _allergies;
 
   final List<String> _availableRestrictions = [
     'Vegetarian',
@@ -42,6 +49,47 @@ class _UserProfileFormState extends State<UserProfileForm> {
     'Seafood',
     'Soy',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialProfile != null) {
+      final profile = widget.initialProfile!;
+      _nameController = TextEditingController(text: profile.name);
+      _ageController = TextEditingController(text: profile.age.toString());
+      _weightController = TextEditingController(
+        text: profile.weight.toString(),
+      );
+      _heightController = TextEditingController(
+        text: profile.height.toString(),
+      );
+      _gender = profile.gender;
+      _activityLevel = profile.activityLevel;
+      _goal = profile.goal;
+      _dietaryRestrictions = List<String>.from(profile.dietaryRestrictions);
+      _allergies = List<String>.from(profile.allergies);
+    } else {
+      _nameController = TextEditingController();
+      _ageController = TextEditingController();
+      _weightController = TextEditingController();
+      _heightController = TextEditingController();
+      _gender = 'Male';
+      _activityLevel = 'Moderate';
+      _goal = 'Maintenance';
+      _dietaryRestrictions = [];
+      _allergies = [];
+      _fillNameFromGoogleAccount();
+    }
+  }
+
+  void _fillNameFromGoogleAccount() {
+    final user = _authService.currentUser;
+    if (user != null &&
+        user.displayName != null &&
+        user.displayName!.isNotEmpty) {
+      _nameController.text = user.displayName!;
+    }
+  }
 
   @override
   void dispose() {
