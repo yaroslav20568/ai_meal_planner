@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:logger/logger.dart';
 import 'package:ai_meal_planner/screens/index.dart';
 import 'package:ai_meal_planner/models/index.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
+
+  final logger = Logger();
+
+  try {
+    await dotenv.load(fileName: '.env');
+    logger.i('Environment variables loaded successfully');
+  } catch (e) {
+    logger.e('Failed to load .env file: $e');
+    rethrow;
+  }
+
+  try {
+    await Firebase.initializeApp();
+    final firebaseApp = Firebase.app();
+    logger.i('Firebase initialized successfully: ${firebaseApp.name}');
+  } catch (e) {
+    logger.e('Firebase initialization failed: $e');
+    rethrow;
+  }
+
   runApp(const MyApp());
 }
 
