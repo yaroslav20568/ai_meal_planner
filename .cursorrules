@@ -26,7 +26,10 @@
 - Слои импортируют данные других слоев ТОЛЬКО через index.dart (рутовый файл слоя)
 - Внутри каждого слоя можно импортировать файлы напрямую
 - Все экспорты из слоя должны быть в index.dart
-- Пример: `import 'package:ai_meal_planner/models/index.dart'` вместо `import 'package:ai_meal_planner/models/user_profile.dart'`
+- Запрещено использовать относительные импорты (../ или ./) - всегда использовать полные package: импорты
+- Пример правильного импорта: `import 'package:ai_meal_planner/models/index.dart'`
+- Пример неправильного импорта: `import '../models/index.dart'` или `import './widgets/button.dart'`
+- Всегда использовать полный путь через package:ai_meal_planner/
 
 ### Организация кода
 - Понятные и описательные названия файлов, функций и переменных
