@@ -122,10 +122,11 @@ class _UserProfileFormState extends State<UserProfileForm> {
             },
           ),
           const SizedBox(height: 24),
-          DietaryRestrictionsSection(
-            availableRestrictions: _availableRestrictions,
-            selectedRestrictions: _dietaryRestrictions,
-            onRestrictionToggled: (restriction) {
+          SelectableChipsSection(
+            title: 'Dietary Restrictions',
+            availableItems: _availableRestrictions,
+            selectedItems: _dietaryRestrictions,
+            onItemToggled: (restriction) {
               setState(() {
                 if (_dietaryRestrictions.contains(restriction)) {
                   _dietaryRestrictions.remove(restriction);
@@ -136,10 +137,11 @@ class _UserProfileFormState extends State<UserProfileForm> {
             },
           ),
           const SizedBox(height: 24),
-          AllergiesSection(
-            availableAllergies: _availableAllergies,
-            selectedAllergies: _allergies,
-            onAllergyToggled: (allergy) {
+          SelectableChipsSection(
+            title: 'Allergies',
+            availableItems: _availableAllergies,
+            selectedItems: _allergies,
+            onItemToggled: (allergy) {
               setState(() {
                 if (_allergies.contains(allergy)) {
                   _allergies.remove(allergy);
