@@ -16,13 +16,15 @@ class MealPlanGenerationScreen extends StatelessWidget {
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.surfaceColor,
       ),
-      body: MealPlanGenerationForm(
-        userProfile: userProfile,
-        onMealPlanGenerated: (mealPlan) {
-          Navigator.of(
-            context,
-          ).pushReplacementNamed('/meal-plan', arguments: mealPlan);
-        },
+      body: SafeArea(
+        child: MealPlanGenerationForm(
+          userProfile: userProfile,
+          onMealPlanGenerated: (mealPlan) {
+            Navigator.of(
+              context,
+            ).pushReplacementNamed('/meal-plan', arguments: mealPlan);
+          },
+        ),
       ),
     );
   }

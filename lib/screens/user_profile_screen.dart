@@ -13,10 +13,12 @@ class UserProfileScreen extends StatelessWidget {
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.surfaceColor,
       ),
-      body: UserProfileForm(
-        onProfileCreated: (profile) {
-          Navigator.of(context).pushNamed('/generate', arguments: profile);
-        },
+      body: SafeArea(
+        child: UserProfileForm(
+          onProfileCreated: (profile) {
+            Navigator.of(context).pushNamed('/generate', arguments: profile);
+          },
+        ),
       ),
     );
   }

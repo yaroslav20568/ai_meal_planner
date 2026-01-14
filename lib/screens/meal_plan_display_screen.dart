@@ -33,21 +33,23 @@ class MealPlanDisplayScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          MealPlanSummaryHeader(mealPlan: mealPlan),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: sortedDays.length,
-              itemBuilder: (context, index) {
-                final day = sortedDays[index];
-                final meals = mealsByDay[day]!;
-                return DaySection(day: day, meals: meals);
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            MealPlanSummaryHeader(mealPlan: mealPlan),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: sortedDays.length,
+                itemBuilder: (context, index) {
+                  final day = sortedDays[index];
+                  final meals = mealsByDay[day]!;
+                  return DaySection(day: day, meals: meals);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
