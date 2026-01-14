@@ -38,9 +38,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AI Meal Planner',
       theme: ThemeData(useMaterial3: true),
-      initialRoute: '/',
+      initialRoute: '/auth',
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/auth': (context) => const AuthScreen(),
+        '/': (context) => const MainScreen(),
         '/profile': (context) => const UserProfileScreen(),
         '/generate': (context) {
           final profile =
