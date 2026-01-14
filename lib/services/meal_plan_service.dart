@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:ai_meal_planner/models/index.dart';
-import 'package:ai_meal_planner/services/gemini_service.dart';
+import 'package:ai_meal_planner/services/index.dart';
 
 class MealPlanService {
   final Logger _logger = Logger();
-  final GeminiService _geminiService = GeminiService();
+  final OpenAIService _openAIService = OpenAIService();
 
   Future<MealPlan> generateMealPlan({
     required UserProfile userProfile,
@@ -14,7 +14,7 @@ class MealPlanService {
     try {
       _logger.i('Generating meal plan for ${userProfile.name}');
 
-      final aiResponse = await _geminiService.generateMealPlan(
+      final aiResponse = await _openAIService.generateMealPlan(
         userProfile: userProfile,
         durationDays: durationDays,
       );

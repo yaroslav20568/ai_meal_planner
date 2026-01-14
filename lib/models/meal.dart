@@ -8,6 +8,7 @@ class Meal {
   final List<String> ingredients;
   final String mealType;
   final String? recipe;
+  final int day;
 
   Meal({
     required this.name,
@@ -19,6 +20,7 @@ class Meal {
     required this.ingredients,
     required this.mealType,
     this.recipe,
+    required this.day,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +34,7 @@ class Meal {
       'ingredients': ingredients,
       'mealType': mealType,
       'recipe': recipe,
+      'day': day,
     };
   }
 
@@ -46,6 +49,7 @@ class Meal {
       ingredients: List<String>.from(json['ingredients'] ?? []),
       mealType: json['mealType'] ?? '',
       recipe: json['recipe'],
+      day: json['day'] ?? 1,
     );
   }
 }

@@ -1,5 +1,5 @@
-import 'meal.dart';
-import 'user_profile.dart';
+import 'package:ai_meal_planner/models/meal.dart';
+import 'package:ai_meal_planner/models/user_profile.dart';
 
 class MealPlan {
   final String? id;

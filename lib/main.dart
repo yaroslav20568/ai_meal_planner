@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ai_meal_planner/constants/index.dart';
+import 'package:ai_meal_planner/screens/index.dart';
+import 'package:ai_meal_planner/models/index.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,8 +17,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AI Meal Planner',
-      theme: ThemeData(useMaterial3: true),
-      home: const Scaffold(body: Center(child: Text('AI Meal Planner'))),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/profile': (context) => const UserProfileScreen(),
+        '/generate': (context) {
+          final profile =
+              ModalRoute.of(context)!.settings.arguments as UserProfile;
+          return MealPlanGenerationScreen(userProfile: profile);
+        },
+        '/meal-plan': (context) {
+          final mealPlan =
+              ModalRoute.of(context)!.settings.arguments as MealPlan;
+          return MealPlanDisplayScreen(mealPlan: mealPlan);
+        },
+      },
     );
   }
 }
