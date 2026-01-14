@@ -11,6 +11,7 @@ class MealPlanGenerationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenLayout(
       title: 'Generate Meal Plan',
+      showSignOutButton: true,
       child: MealPlanGenerationForm(
         userProfile: userProfile,
         onMealPlanGenerated: (mealPlan) {

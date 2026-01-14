@@ -23,11 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     try {
       final userCredential = await _authService.signInWithGoogle();
-      if (userCredential != null && mounted) {
-        Navigator.of(context).pushReplacementNamed('/');
-      } else if (!mounted) {
-        return;
-      } else {
+      if (userCredential == null && mounted) {
         setState(() {
           _isLoading = false;
         });

@@ -18,6 +18,7 @@ class MealPlanDisplayScreen extends StatelessWidget {
 
     return ScreenLayout(
       title: 'Meal Plan',
+      showSignOutButton: true,
       child: Column(
         children: [
           MealPlanSummaryHeader(mealPlan: mealPlan),

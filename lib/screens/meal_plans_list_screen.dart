@@ -61,6 +61,7 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
   Widget build(BuildContext context) {
     return ScreenLayout(
       title: 'Meal Plans',
+      showSignOutButton: true,
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null

@@ -19,6 +19,8 @@ class MealPlanGenerationForm extends StatefulWidget {
 
 class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
   final MealPlanService _mealPlanService = MealPlanService();
+  final FirestoreService _firestoreService = FirestoreService();
+  final AuthService _authService = AuthService();
   bool _isGenerating = false;
   String? _errorMessage;
   int _durationDays = 7;
@@ -36,6 +38,25 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
       );
 
       if (!mounted) return;
+
+      final user = _authService.currentUser;
+      if (user != null) {
+        try {
+          await _firestoreService.saveMealPlan(
+            userId: user.uid,
+            mealPlan: mealPlan,
+          );
+        } catch (e) {
+          if (mounted) {
+            setState(() {
+              _errorMessage =
+                  'Meal plan generated but failed to save. Please try again.';
+              _isGenerating = false;
+            });
+            return;
+          }
+        }
+      }
 
       widget.onMealPlanGenerated(mealPlan);
     } catch (e) {
