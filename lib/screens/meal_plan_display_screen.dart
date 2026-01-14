@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ai_meal_planner/constants/index.dart';
 import 'package:ai_meal_planner/models/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
 
@@ -17,39 +16,23 @@ class MealPlanDisplayScreen extends StatelessWidget {
 
     final sortedDays = mealsByDay.keys.toList()..sort();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meal Plan'),
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: AppColors.surfaceColor,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.home),
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil('/', (route) => false);
-            },
+    return ScreenLayout(
+      title: 'Meal Plan',
+      child: Column(
+        children: [
+          MealPlanSummaryHeader(mealPlan: mealPlan),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: sortedDays.length,
+              itemBuilder: (context, index) {
+                final day = sortedDays[index];
+                final meals = mealsByDay[day]!;
+                return DaySection(day: day, meals: meals);
+              },
+            ),
           ),
         ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            MealPlanSummaryHeader(mealPlan: mealPlan),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: sortedDays.length,
-                itemBuilder: (context, index) {
-                  final day = sortedDays[index];
-                  final meals = mealsByDay[day]!;
-                  return DaySection(day: day, meals: meals);
-                },
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

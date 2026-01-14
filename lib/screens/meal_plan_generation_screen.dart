@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ai_meal_planner/constants/index.dart';
 import 'package:ai_meal_planner/models/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
 
@@ -10,21 +9,15 @@ class MealPlanGenerationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Generate Meal Plan'),
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: AppColors.surfaceColor,
-      ),
-      body: SafeArea(
-        child: MealPlanGenerationForm(
-          userProfile: userProfile,
-          onMealPlanGenerated: (mealPlan) {
-            Navigator.of(
-              context,
-            ).pushReplacementNamed('/meal-plan', arguments: mealPlan);
-          },
-        ),
+    return ScreenLayout(
+      title: 'Generate Meal Plan',
+      child: MealPlanGenerationForm(
+        userProfile: userProfile,
+        onMealPlanGenerated: (mealPlan) {
+          Navigator.of(
+            context,
+          ).pushReplacementNamed('/meal-plan', arguments: mealPlan);
+        },
       ),
     );
   }
