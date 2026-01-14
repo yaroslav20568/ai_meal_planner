@@ -150,7 +150,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
             },
           ),
           const SizedBox(height: 32),
-          PrimaryButton(text: 'Create Meal Plan', onPressed: _calculateAndSave),
+          Button(text: 'Create Meal Plan', onPressed: _calculateAndSave),
         ],
       ),
     );

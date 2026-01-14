@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ai_meal_planner/constants/index.dart';
 
-class PrimaryButton extends StatelessWidget {
+enum ButtonVariant { primary }
+
+class Button extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final bool isLoading;
@@ -9,8 +11,9 @@ class PrimaryButton extends StatelessWidget {
   final String? helperText;
   final EdgeInsetsGeometry? padding;
   final double? fontSize;
+  final ButtonVariant variant;
 
-  const PrimaryButton({
+  const Button({
     super.key,
     required this.text,
     this.onPressed,
@@ -19,6 +22,7 @@ class PrimaryButton extends StatelessWidget {
     this.helperText,
     this.padding,
     this.fontSize,
+    this.variant = ButtonVariant.primary,
   });
 
   @override

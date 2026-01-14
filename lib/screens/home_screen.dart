@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
-              PrimaryButton(
+              Button(
                 text: 'Get Started',
                 onPressed: () {
                   Navigator.of(context).pushNamed('/profile');

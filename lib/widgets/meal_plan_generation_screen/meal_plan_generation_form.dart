@@ -68,7 +68,7 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
           const SizedBox(height: 32),
           if (_errorMessage != null)
             ErrorMessageWidget(message: _errorMessage!),
-          PrimaryButton(
+          Button(
             text: 'Generate Meal Plan',
             onPressed: _generateMealPlan,
             isLoading: _isGenerating,

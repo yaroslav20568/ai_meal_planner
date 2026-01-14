@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:ai_meal_planner/constants/index.dart';
 import 'package:ai_meal_planner/screens/index.dart';
 import 'package:ai_meal_planner/models/index.dart';
 
@@ -17,10 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AI Meal Planner',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
-      ),
+      theme: ThemeData(useMaterial3: true),
       initialRoute: '/',
       routes: {
         '/': (context) => const HomeScreen(),
