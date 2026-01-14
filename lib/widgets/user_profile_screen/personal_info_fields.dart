@@ -24,6 +24,7 @@ class PersonalInfoFields extends StatelessWidget {
             labelText: 'Name',
             border: OutlineInputBorder(),
           ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your name';
@@ -42,6 +43,7 @@ class PersonalInfoFields extends StatelessWidget {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your age';

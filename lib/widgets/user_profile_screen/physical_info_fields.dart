@@ -22,6 +22,7 @@ class PhysicalInfoFields extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.number,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your weight';
@@ -43,6 +44,7 @@ class PhysicalInfoFields extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.number,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your height';
