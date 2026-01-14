@@ -33,45 +33,48 @@ class PersonalInfoFields extends StatelessWidget {
           },
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: ageController,
-                decoration: const InputDecoration(
-                  labelText: 'Age',
-                  border: OutlineInputBorder(),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: ageController,
+                  decoration: const InputDecoration(
+                    labelText: 'Age',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your age';
+                    }
+                    final age = int.tryParse(value);
+                    if (age == null || age < 1 || age > 120) {
+                      return 'Invalid age';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your age';
-                  }
-                  final age = int.tryParse(value);
-                  if (age == null || age < 1 || age > 120) {
-                    return 'Invalid age';
-                  }
-                  return null;
-                },
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: DropdownButtonFormField<String>(
-                initialValue: gender,
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
-                  border: OutlineInputBorder(),
+              const SizedBox(width: 16),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  initialValue: gender,
+                  decoration: const InputDecoration(
+                    labelText: 'Gender',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: const [
+                    DropdownMenuItem(value: 'Male', child: Text('Male')),
+                    DropdownMenuItem(value: 'Female', child: Text('Female')),
+                  ],
+                  onChanged: (value) => onGenderChanged(value!),
                 ),
-                items: const [
-                  DropdownMenuItem(value: 'Male', child: Text('Male')),
-                  DropdownMenuItem(value: 'Female', child: Text('Female')),
-                ],
-                onChanged: (value) => onGenderChanged(value!),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
