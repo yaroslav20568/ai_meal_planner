@@ -4,8 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:ai_meal_planner/screens/index.dart';
-import 'package:ai_meal_planner/models/index.dart';
 import 'package:ai_meal_planner/services/index.dart';
+import 'package:ai_meal_planner/navigation/index.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,20 +55,7 @@ class MyApp extends StatelessWidget {
           return const AuthScreen();
         },
       ),
-      routes: {
-        '/auth': (context) => const AuthScreen(),
-        '/profile': (context) => const UserProfileScreen(),
-        '/generate': (context) {
-          final profile =
-              ModalRoute.of(context)!.settings.arguments as UserProfile;
-          return MealPlanGenerationScreen(userProfile: profile);
-        },
-        '/meal-plan': (context) {
-          final mealPlan =
-              ModalRoute.of(context)!.settings.arguments as MealPlan;
-          return MealPlanDisplayScreen(mealPlan: mealPlan);
-        },
-      },
+      routes: AppRoutes.routes,
     );
   }
 }
