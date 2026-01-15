@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ai_meal_planner/constants/index.dart';
+import 'package:ai_meal_planner/screens/index.dart';
 import 'package:ai_meal_planner/services/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
 
@@ -23,10 +24,20 @@ class _AuthScreenState extends State<AuthScreen> {
 
     try {
       final userCredential = await _authService.signInWithGoogle();
-      if (userCredential == null && mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (userCredential == null) {
+        return;
+      }
+
+      if (_authService.currentUser != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {
