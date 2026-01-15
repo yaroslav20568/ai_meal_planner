@@ -101,7 +101,7 @@ class MealCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor.withValues(alpha: 0.1),
+        color: AppColors.primaryColorLight,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(label, style: const TextStyle(fontSize: 12)),

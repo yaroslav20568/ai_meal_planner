@@ -12,7 +12,7 @@ class MealPlanSummaryHeader extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      color: AppColors.primaryColor.withValues(alpha: 0.1),
+      color: AppColors.primaryColorLight,
       child: Column(
         children: [
           Text(
