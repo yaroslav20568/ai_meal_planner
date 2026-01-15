@@ -46,7 +46,10 @@ class Button extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(loadingText ?? 'Loading...'),
+                Text(
+                  loadingText ?? 'Loading...',
+                  style: TextStyle(fontSize: fontSize ?? 16),
+                ),
               ],
             )
           : Text(text, style: TextStyle(fontSize: fontSize ?? 16)),

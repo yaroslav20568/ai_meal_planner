@@ -80,16 +80,24 @@ class _AuthScreenState extends State<AuthScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                Button(
-                  text: 'Sign in with Google',
-                  onPressed: _signInWithGoogle,
-                  isLoading: _isLoading,
-                  loadingText: 'Signing in...',
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                Center(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 48),
+                      child: Button(
+                        text: 'Sign in with Google',
+                        onPressed: _signInWithGoogle,
+                        isLoading: _isLoading,
+                        loadingText: 'Signing in...',
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
-                  fontSize: 18,
                 ),
                 if (_errorMessage != null) ...[
                   const SizedBox(height: 16),
