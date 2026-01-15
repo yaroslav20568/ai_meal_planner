@@ -43,6 +43,17 @@ Future<void> main() async {
     logger.e('AppMetrica initialization failed: $e');
   }
 
+  try {
+    final appsflyerDevKey = dotenv.env['APPSFLYER_DEV_KEY'];
+    final appsflyerAppId = dotenv.env['APPSFLYER_APP_ID'];
+    await AppsFlyerService.instance.initialize(
+      devKey: appsflyerDevKey,
+      appId: appsflyerAppId,
+    );
+  } catch (e) {
+    logger.e('AppsFlyer initialization failed: $e');
+  }
+
   runApp(const MyApp());
 }
 

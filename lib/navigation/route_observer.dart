@@ -5,6 +5,7 @@ class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   final FirebaseAnalyticsService _firebaseAnalytics =
       FirebaseAnalyticsService.instance;
   final AppMetricaService _appmetrica = AppMetricaService.instance;
+  final AppsFlyerService _appsflyer = AppsFlyerService.instance;
 
   void _sendScreenView(PageRoute<dynamic> route) {
     final String? screenName = route.settings.name;
@@ -21,6 +22,8 @@ class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     );
 
     _appmetrica.logScreenView(screenName: screenName, screenClass: screenClass);
+
+    _appsflyer.logScreenView(screenName: screenName, screenClass: screenClass);
   }
 
   @override
