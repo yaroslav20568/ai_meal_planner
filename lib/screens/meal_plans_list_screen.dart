@@ -22,6 +22,7 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
   void initState() {
     super.initState();
     _loadMealPlans();
+    AnalyticsService.instance.logEvent(name: 'meal_plan_list_view');
   }
 
   Future<void> _loadMealPlans() async {

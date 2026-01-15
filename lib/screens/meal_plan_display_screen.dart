@@ -27,6 +27,7 @@ class _MealPlanDisplayScreenState extends State<MealPlanDisplayScreen> {
   }
 
   Future<void> _loadMealPlan() async {
+    final analytics = AnalyticsService.instance;
     final user = _authService.currentUser;
     if (user == null) {
       setState(() {
@@ -52,6 +53,16 @@ class _MealPlanDisplayScreenState extends State<MealPlanDisplayScreen> {
           _isLoading = false;
           if (mealPlan == null) {
             _errorMessage = 'Meal plan not found';
+          } else {
+            analytics.logEvent(
+              name: 'meal_plan_view',
+              parameters: {
+                'meal_plan_id': widget.mealPlanId,
+                'duration_days': mealPlan.durationDays,
+                'total_calories': mealPlan.totalCalories,
+                'meals_count': mealPlan.meals.length,
+              },
+            );
           }
         });
       }

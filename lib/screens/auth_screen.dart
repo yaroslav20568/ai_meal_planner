@@ -13,10 +13,13 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final AuthService _authService = AuthService();
+  final AnalyticsService _analytics = AnalyticsService.instance;
   bool _isLoading = false;
   String? _errorMessage;
 
   Future<void> _signInWithGoogle() async {
+    _analytics.logEvent(name: 'sign_in_start');
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -35,11 +38,27 @@ class _AuthScreenState extends State<AuthScreen> {
       }
 
       if (_authService.currentUser != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+        await _analytics.logEvent(
+          name: 'sign_in_success',
+          parameters: {
+            'method': 'google',
+            'user_id': _authService.currentUser!.uid,
+          },
         );
+        await _analytics.setUserId(_authService.currentUser!.uid);
+
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        }
       }
     } catch (e) {
+      await _analytics.logEvent(
+        name: 'sign_in_error',
+        parameters: {'method': 'google', 'error': e.toString()},
+      );
+
       if (mounted) {
         setState(() {
           _isLoading = false;

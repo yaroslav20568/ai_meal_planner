@@ -27,6 +27,13 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
   int _durationDays = 7;
 
   Future<void> _generateMealPlan() async {
+    final analytics = AnalyticsService.instance;
+
+    await analytics.logEvent(
+      name: 'meal_plan_generation_start',
+      parameters: {'duration_days': _durationDays},
+    );
+
     setState(() {
       _isGenerating = true;
       _errorMessage = null;
@@ -57,6 +64,16 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
           userId: user.uid,
           mealPlan: mealPlan,
         );
+
+        await analytics.logEvent(
+          name: 'meal_plan_saved',
+          parameters: {
+            'meal_plan_id': mealPlanId,
+            'duration_days': mealPlan.durationDays,
+            'total_calories': mealPlan.totalCalories,
+            'meals_count': mealPlan.meals.length,
+          },
+        );
       } catch (e) {
         if (mounted) {
           setState(() {
@@ -68,8 +85,22 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
         return;
       }
 
+      await analytics.logEvent(
+        name: 'meal_plan_generation_success',
+        parameters: {
+          'meal_plan_id': mealPlanId,
+          'duration_days': mealPlan.durationDays,
+          'total_calories': mealPlan.totalCalories,
+        },
+      );
+
       widget.onMealPlanGenerated(mealPlanId);
     } catch (e) {
+      await analytics.logEvent(
+        name: 'meal_plan_generation_error',
+        parameters: {'duration_days': _durationDays, 'error': e.toString()},
+      );
+
       if (!mounted) return;
 
       setState(() {
@@ -99,6 +130,10 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
                 setState(() {
                   _durationDays = value;
                 });
+                AnalyticsService.instance.logEvent(
+                  name: 'meal_plan_duration_selected',
+                  parameters: {'duration_days': value},
+                );
               },
             ),
             const SizedBox(height: 32),

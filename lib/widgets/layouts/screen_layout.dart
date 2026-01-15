@@ -16,8 +16,14 @@ class ScreenLayout extends StatelessWidget {
 
   Future<void> _handleSignOut(BuildContext context) async {
     final authService = AuthService();
+    final analytics = AnalyticsService.instance;
+
+    await analytics.logEvent(name: 'sign_out');
+
     try {
       await authService.signOut();
+      await analytics.setUserId(null);
+
       if (context.mounted) {
         Navigator.of(
           context,
