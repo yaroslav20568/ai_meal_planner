@@ -15,8 +15,8 @@ class AppRoutes {
       return MealPlanGenerationScreen(userProfile: profile);
     },
     '/meal-plan': (context) {
-      final mealPlan = ModalRoute.of(context)!.settings.arguments as MealPlan;
-      return MealPlanDisplayScreen(mealPlan: mealPlan);
+      final mealPlanId = ModalRoute.of(context)!.settings.arguments as String;
+      return MealPlanDisplayScreen(mealPlanId: mealPlanId);
     },
   };
 }

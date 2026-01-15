@@ -29,6 +29,7 @@ class MealCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(width: 12),
                 Text(
                   '${meal.calories.toStringAsFixed(0)} kcal',
                   style: const TextStyle(
@@ -39,7 +40,7 @@ class MealCard extends StatelessWidget {
               ],
             ),
             if (meal.description.isNotEmpty) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 meal.description,
                 style: const TextStyle(
@@ -48,7 +49,7 @@ class MealCard extends StatelessWidget {
                 ),
               ),
             ],
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               children: [
                 _buildMacroChip('P: ${meal.proteins.toStringAsFixed(1)}g'),
@@ -59,12 +60,12 @@ class MealCard extends StatelessWidget {
               ],
             ),
             if (meal.ingredients.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               const Text(
                 'Ingredients:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Wrap(
                 spacing: 4,
                 runSpacing: 4,
@@ -80,7 +81,7 @@ class MealCard extends StatelessWidget {
               ),
             ],
             if (meal.recipe != null && meal.recipe!.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               ExpansionTile(
                 title: const Text('Recipe'),
                 children: [

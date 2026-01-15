@@ -68,7 +68,17 @@ class OpenAIService {
         }
       } else {
         _logger.e('API error: ${response.statusCode} - ${response.body}');
-        throw Exception('API error: ${response.statusCode}');
+        String errorMessage = 'API error: ${response.statusCode}';
+        try {
+          final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+          final error = errorData['error'] as Map<String, dynamic>?;
+          if (error != null && error['message'] != null) {
+            errorMessage = error['message'] as String;
+          }
+        } catch (e) {
+          _logger.w('Failed to parse error message: $e');
+        }
+        throw Exception(errorMessage);
       }
     } on http.ClientException catch (e) {
       _logger.e('Network error: ${e.message}');

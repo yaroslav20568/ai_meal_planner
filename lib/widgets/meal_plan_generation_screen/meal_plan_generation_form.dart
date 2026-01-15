@@ -6,7 +6,7 @@ import 'package:ai_meal_planner/widgets/index.dart';
 
 class MealPlanGenerationForm extends StatefulWidget {
   final UserProfile userProfile;
-  final ValueChanged<MealPlan> onMealPlanGenerated;
+  final ValueChanged<String> onMealPlanGenerated;
 
   const MealPlanGenerationForm({
     super.key,
@@ -41,30 +41,42 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
       if (!mounted) return;
 
       final user = _authService.currentUser;
-      if (user != null) {
-        try {
-          await _firestoreService.saveMealPlan(
-            userId: user.uid,
-            mealPlan: mealPlan,
-          );
-        } catch (e) {
-          if (mounted) {
-            setState(() {
-              _errorMessage =
-                  'Meal plan generated but failed to save. Please try again.';
-              _isGenerating = false;
-            });
-            return;
-          }
+      if (user == null) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'User not authenticated';
+            _isGenerating = false;
+          });
         }
+        return;
       }
 
-      widget.onMealPlanGenerated(mealPlan);
+      String mealPlanId;
+      try {
+        mealPlanId = await _firestoreService.saveMealPlan(
+          userId: user.uid,
+          mealPlan: mealPlan,
+        );
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _errorMessage =
+                'Meal plan generated but failed to save. Please try again.';
+            _isGenerating = false;
+          });
+        }
+        return;
+      }
+
+      widget.onMealPlanGenerated(mealPlanId);
     } catch (e) {
       if (!mounted) return;
 
       setState(() {
-        _errorMessage = 'Failed to generate meal plan. Please try again.';
+        final errorText = e.toString();
+        _errorMessage = errorText.startsWith('Exception: ')
+            ? errorText.substring(11)
+            : errorText;
         _isGenerating = false;
       });
     }

@@ -14,10 +14,10 @@ class MealPlanGenerationScreen extends StatelessWidget {
       showSignOutButton: true,
       child: MealPlanGenerationForm(
         userProfile: userProfile,
-        onMealPlanGenerated: (mealPlan) {
+        onMealPlanGenerated: (mealPlanId) {
           Navigator.of(
             context,
-          ).pushReplacementNamed('/meal-plan', arguments: mealPlan);
+          ).pushReplacementNamed('/meal-plan', arguments: mealPlanId);
         },
       ),
     );

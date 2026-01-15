@@ -78,7 +78,11 @@ class DaySection extends StatelessWidget {
             ),
           ],
         ),
-        children: [...mealsByType.entries.map(_buildMealTypeSection)],
+        children: [
+          const SizedBox(height: 8),
+          ...mealsByType.entries.map(_buildMealTypeSection),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }

@@ -54,7 +54,10 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
   }
 
   void _navigateToMealPlan(MealPlan mealPlan) {
-    Navigator.of(context).pushNamed('/meal-plan', arguments: mealPlan);
+    if (mealPlan.id == null) {
+      return;
+    }
+    Navigator.of(context).pushNamed('/meal-plan', arguments: mealPlan.id);
   }
 
   Widget _buildMealPlanCard(MealPlan mealPlan) {

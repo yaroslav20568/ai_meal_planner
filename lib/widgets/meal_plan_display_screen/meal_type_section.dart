@@ -46,6 +46,7 @@ class MealTypeSection extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 4),
           ...meals.map((meal) => MealCard(meal: meal)),
         ],
       ),

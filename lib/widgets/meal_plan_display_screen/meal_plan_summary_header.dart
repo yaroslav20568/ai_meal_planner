@@ -19,7 +19,7 @@ class MealPlanSummaryHeader extends StatelessWidget {
             'Plan for ${mealPlan.durationDays} days',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -45,6 +45,7 @@ class MealPlanSummaryHeader extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 8),
         ],
       ),
     );
