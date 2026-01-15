@@ -29,11 +29,20 @@ Future<void> main() async {
     rethrow;
   }
 
+  try {
+    await FirebaseAnalyticsService.instance.initialize();
+    await FirebaseAnalyticsService.instance.logAppOpen();
+  } catch (e) {
+    logger.e('Firebase Analytics initialization failed: $e');
+  }
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  static final AnalyticsRouteObserver routeObserver = AnalyticsRouteObserver();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +50,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AI Meal Planner',
       theme: ThemeData(useMaterial3: true),
+      navigatorObservers: [routeObserver],
       home: StreamBuilder<User?>(
         stream: authService.authStateChanges,
         builder: (context, snapshot) {
