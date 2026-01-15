@@ -36,6 +36,13 @@ Future<void> main() async {
     logger.e('Firebase Analytics initialization failed: $e');
   }
 
+  try {
+    final appmetricaApiKey = dotenv.env['APPMETRICA_API_KEY'];
+    await AppMetricaService.instance.initialize(apiKey: appmetricaApiKey);
+  } catch (e) {
+    logger.e('AppMetrica initialization failed: $e');
+  }
+
   runApp(const MyApp());
 }
 

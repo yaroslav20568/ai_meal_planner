@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ai_meal_planner/services/index.dart';
 
 class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
-  final FirebaseAnalyticsService _analyticsService =
+  final FirebaseAnalyticsService _firebaseAnalytics =
       FirebaseAnalyticsService.instance;
+  final AppMetricaService _appmetrica = AppMetricaService.instance;
 
   void _sendScreenView(PageRoute<dynamic> route) {
     final String? screenName = route.settings.name;
@@ -14,10 +15,12 @@ class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     final String screenClass =
         route.settings.arguments?.toString() ?? screenName;
 
-    _analyticsService.logScreenView(
+    _firebaseAnalytics.logScreenView(
       screenName: screenName,
       screenClass: screenClass,
     );
+
+    _appmetrica.logScreenView(screenName: screenName, screenClass: screenClass);
   }
 
   @override
