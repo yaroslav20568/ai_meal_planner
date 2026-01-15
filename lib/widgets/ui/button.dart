@@ -8,7 +8,6 @@ class Button extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final String? loadingText;
-  final String? helperText;
   final EdgeInsetsGeometry? padding;
   final double? fontSize;
   final ButtonVariant variant;
@@ -19,7 +18,6 @@ class Button extends StatelessWidget {
     this.onPressed,
     this.isLoading = false,
     this.loadingText,
-    this.helperText,
     this.padding,
     this.fontSize,
     this.variant = ButtonVariant.primary,
@@ -27,7 +25,7 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final button = ElevatedButton(
+    return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryColor,
@@ -53,22 +51,5 @@ class Button extends StatelessWidget {
             )
           : Text(text, style: TextStyle(fontSize: fontSize ?? 16)),
     );
-
-    if (helperText != null && isLoading) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          button,
-          const SizedBox(height: 24),
-          Text(
-            helperText!,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.textSecondary),
-          ),
-        ],
-      );
-    }
-
-    return button;
   }
 }

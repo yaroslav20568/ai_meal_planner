@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ai_meal_planner/constants/index.dart';
 import 'package:ai_meal_planner/models/index.dart';
 import 'package:ai_meal_planner/services/index.dart';
 import 'package:ai_meal_planner/widgets/index.dart';
@@ -94,8 +95,15 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
             onPressed: _generateMealPlan,
             isLoading: _isGenerating,
             loadingText: 'Generating plan...',
-            helperText: _isGenerating ? 'This may take a few minutes...' : null,
           ),
+          if (_isGenerating) ...[
+            const SizedBox(height: 24),
+            const Text(
+              'This may take a few minutes...',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ],
         ],
       ),
     );
