@@ -10,6 +10,28 @@ class PhysicalInfoFields extends StatelessWidget {
     required this.heightController,
   });
 
+  String? _validateWeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your weight';
+    }
+    final weight = double.tryParse(value);
+    if (weight == null || weight < 1 || weight > 300) {
+      return 'Invalid weight';
+    }
+    return null;
+  }
+
+  String? _validateHeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your height';
+    }
+    final height = double.tryParse(value);
+    if (height == null || height < 50 || height > 250) {
+      return 'Invalid height';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
@@ -25,16 +47,7 @@ class PhysicalInfoFields extends StatelessWidget {
               ),
               keyboardType: TextInputType.number,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your weight';
-                }
-                final weight = double.tryParse(value);
-                if (weight == null || weight < 1 || weight > 300) {
-                  return 'Invalid weight';
-                }
-                return null;
-              },
+              validator: _validateWeight,
             ),
           ),
           const SizedBox(width: 16),
@@ -47,16 +60,7 @@ class PhysicalInfoFields extends StatelessWidget {
               ),
               keyboardType: TextInputType.number,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your height';
-                }
-                final height = double.tryParse(value);
-                if (height == null || height < 50 || height > 250) {
-                  return 'Invalid height';
-                }
-                return null;
-              },
+              validator: _validateHeight,
             ),
           ),
         ],

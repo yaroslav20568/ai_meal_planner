@@ -14,6 +14,15 @@ class SelectableChipsSection extends StatelessWidget {
     required this.onItemToggled,
   });
 
+  Widget _buildChip(String item) {
+    final isSelected = selectedItems.contains(item);
+    return FilterChip(
+      label: Text(item),
+      selected: isSelected,
+      onSelected: (_) => onItemToggled(item),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,14 +36,7 @@ class SelectableChipsSection extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: availableItems.map((item) {
-            final isSelected = selectedItems.contains(item);
-            return FilterChip(
-              label: Text(item),
-              selected: isSelected,
-              onSelected: (_) => onItemToggled(item),
-            );
-          }).toList(),
+          children: availableItems.map(_buildChip).toList(),
         ),
       ],
     );

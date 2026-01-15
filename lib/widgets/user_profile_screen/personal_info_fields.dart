@@ -14,6 +14,24 @@ class PersonalInfoFields extends StatelessWidget {
     required this.onGenderChanged,
   });
 
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
+  }
+
+  String? _validateAge(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your age';
+    }
+    final age = int.tryParse(value);
+    if (age == null || age < 1 || age > 120) {
+      return 'Invalid age';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,12 +43,7 @@ class PersonalInfoFields extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your name';
-            }
-            return null;
-          },
+          validator: _validateName,
         ),
         const SizedBox(height: 16),
         IntrinsicHeight(
@@ -46,16 +59,7 @@ class PersonalInfoFields extends StatelessWidget {
                   ),
                   keyboardType: TextInputType.number,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your age';
-                    }
-                    final age = int.tryParse(value);
-                    if (age == null || age < 1 || age > 120) {
-                      return 'Invalid age';
-                    }
-                    return null;
-                  },
+                  validator: _validateAge,
                 ),
               ),
               const SizedBox(width: 16),

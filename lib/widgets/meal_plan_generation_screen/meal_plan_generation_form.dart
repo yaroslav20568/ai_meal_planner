@@ -72,39 +72,42 @@ class _MealPlanGenerationFormState extends State<MealPlanGenerationForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ProfileSummaryCard(userProfile: widget.userProfile),
-          const SizedBox(height: 24),
-          DurationSlider(
-            durationDays: _durationDays,
-            onDurationChanged: (value) {
-              setState(() {
-                _durationDays = value;
-              });
-            },
-          ),
-          const SizedBox(height: 32),
-          if (_errorMessage != null)
-            ErrorMessageWidget(message: _errorMessage!),
-          Button(
-            text: 'Generate Meal Plan',
-            onPressed: _generateMealPlan,
-            isLoading: _isGenerating,
-            loadingText: 'Generating plan...',
-          ),
-          if (_isGenerating) ...[
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ProfileSummaryCard(userProfile: widget.userProfile),
             const SizedBox(height: 24),
-            const Text(
-              'This may take a few minutes...',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textSecondary),
+            DurationSlider(
+              durationDays: _durationDays,
+              onDurationChanged: (value) {
+                setState(() {
+                  _durationDays = value;
+                });
+              },
             ),
+            const SizedBox(height: 32),
+            if (_errorMessage != null)
+              ErrorMessageWidget(message: _errorMessage!),
+            Button(
+              text: 'Generate Meal Plan',
+              onPressed: _generateMealPlan,
+              isLoading: _isGenerating,
+              loadingText: 'Generating plan...',
+            ),
+            if (_isGenerating) ...[
+              const SizedBox(height: 24),
+              const Text(
+                'This may take a few minutes...',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textSecondary),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

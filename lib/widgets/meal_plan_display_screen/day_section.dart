@@ -9,23 +9,43 @@ class DaySection extends StatelessWidget {
 
   const DaySection({super.key, required this.day, required this.meals});
 
-  @override
-  Widget build(BuildContext context) {
+  Map<String, List<Meal>> _groupMealsByType() {
     final mealsByType = <String, List<Meal>>{};
     for (var meal in meals) {
       mealsByType.putIfAbsent(meal.mealType, () => []).add(meal);
     }
+    return mealsByType;
+  }
 
-    final dayCalories = meals.fold<double>(
-      0,
-      (sum, meal) => sum + meal.calories,
-    );
-    final dayProteins = meals.fold<double>(
-      0,
-      (sum, meal) => sum + meal.proteins,
-    );
-    final dayCarbs = meals.fold<double>(0, (sum, meal) => sum + meal.carbs);
-    final dayFats = meals.fold<double>(0, (sum, meal) => sum + meal.fats);
+  double _calculateTotalCalories() {
+    return meals.fold<double>(0, (sum, meal) => sum + meal.calories);
+  }
+
+  double _calculateTotalProteins() {
+    return meals.fold<double>(0, (sum, meal) => sum + meal.proteins);
+  }
+
+  double _calculateTotalCarbs() {
+    return meals.fold<double>(0, (sum, meal) => sum + meal.carbs);
+  }
+
+  double _calculateTotalFats() {
+    return meals.fold<double>(0, (sum, meal) => sum + meal.fats);
+  }
+
+  Widget _buildMealTypeSection(MapEntry<String, List<Meal>> entry) {
+    final mealType = entry.key;
+    final typeMeals = entry.value;
+    return MealTypeSection(mealType: mealType, meals: typeMeals);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mealsByType = _groupMealsByType();
+    final dayCalories = _calculateTotalCalories();
+    final dayProteins = _calculateTotalProteins();
+    final dayCarbs = _calculateTotalCarbs();
+    final dayFats = _calculateTotalFats();
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -58,13 +78,7 @@ class DaySection extends StatelessWidget {
             ),
           ],
         ),
-        children: [
-          ...mealsByType.entries.map((entry) {
-            final mealType = entry.key;
-            final typeMeals = entry.value;
-            return MealTypeSection(mealType: mealType, meals: typeMeals);
-          }),
-        ],
+        children: [...mealsByType.entries.map(_buildMealTypeSection)],
       ),
     );
   }

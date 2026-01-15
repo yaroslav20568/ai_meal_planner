@@ -132,6 +132,44 @@ class _UserProfileFormState extends State<UserProfileForm> {
     }
   }
 
+  void _handleGenderChanged(String value) {
+    setState(() {
+      _gender = value;
+    });
+  }
+
+  void _handleActivityLevelChanged(String value) {
+    setState(() {
+      _activityLevel = value;
+    });
+  }
+
+  void _handleGoalChanged(String value) {
+    setState(() {
+      _goal = value;
+    });
+  }
+
+  void _handleRestrictionToggled(String restriction) {
+    setState(() {
+      if (_dietaryRestrictions.contains(restriction)) {
+        _dietaryRestrictions.remove(restriction);
+      } else {
+        _dietaryRestrictions.add(restriction);
+      }
+    });
+  }
+
+  void _handleAllergyToggled(String allergy) {
+    setState(() {
+      if (_allergies.contains(allergy)) {
+        _allergies.remove(allergy);
+      } else {
+        _allergies.add(allergy);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -143,11 +181,7 @@ class _UserProfileFormState extends State<UserProfileForm> {
             nameController: _nameController,
             ageController: _ageController,
             gender: _gender,
-            onGenderChanged: (value) {
-              setState(() {
-                _gender = value;
-              });
-            },
+            onGenderChanged: _handleGenderChanged,
           ),
           const SizedBox(height: 16),
           PhysicalInfoFields(
@@ -158,46 +192,22 @@ class _UserProfileFormState extends State<UserProfileForm> {
           ActivityAndGoalFields(
             activityLevel: _activityLevel,
             goal: _goal,
-            onActivityLevelChanged: (value) {
-              setState(() {
-                _activityLevel = value;
-              });
-            },
-            onGoalChanged: (value) {
-              setState(() {
-                _goal = value;
-              });
-            },
+            onActivityLevelChanged: _handleActivityLevelChanged,
+            onGoalChanged: _handleGoalChanged,
           ),
           const SizedBox(height: 24),
           SelectableChipsSection(
             title: 'Dietary Restrictions',
             availableItems: _availableRestrictions,
             selectedItems: _dietaryRestrictions,
-            onItemToggled: (restriction) {
-              setState(() {
-                if (_dietaryRestrictions.contains(restriction)) {
-                  _dietaryRestrictions.remove(restriction);
-                } else {
-                  _dietaryRestrictions.add(restriction);
-                }
-              });
-            },
+            onItemToggled: _handleRestrictionToggled,
           ),
           const SizedBox(height: 24),
           SelectableChipsSection(
             title: 'Allergies',
             availableItems: _availableAllergies,
             selectedItems: _allergies,
-            onItemToggled: (allergy) {
-              setState(() {
-                if (_allergies.contains(allergy)) {
-                  _allergies.remove(allergy);
-                } else {
-                  _allergies.add(allergy);
-                }
-              });
-            },
+            onItemToggled: _handleAllergyToggled,
           ),
           const SizedBox(height: 32),
           Button(text: 'Create Meal Plan', onPressed: _calculateAndSave),

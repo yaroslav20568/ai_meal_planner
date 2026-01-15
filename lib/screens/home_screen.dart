@@ -74,73 +74,94 @@ class _HomeScreenState extends State<HomeScreen> {
       showSignOutButton: true,
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.restaurant_menu,
-                      size: 80,
-                      color: AppColors.primaryColor,
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Welcome to AI Meal Planner',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      _userProfile != null
-                          ? 'Create a personalized meal plan based on your goals and preferences'
-                          : 'Create your profile to get started with personalized meal plans',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (_errorMessage != null) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        _errorMessage!,
-                        style: const TextStyle(
-                          color: AppColors.errorColor,
-                          fontSize: 14,
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                final isLandscape =
+                    MediaQuery.of(context).orientation == Orientation.landscape;
+                final availableHeight = constraints.maxHeight;
+
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: availableHeight),
+                    child: IntrinsicHeight(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isLandscape
+                                ? constraints.maxWidth * 0.1
+                                : 24,
+                            vertical: isLandscape ? 16 : 24,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.restaurant_menu,
+                                size: isLandscape ? 60 : 80,
+                                color: AppColors.primaryColor,
+                              ),
+                              SizedBox(height: isLandscape ? 16 : 24),
+                              const Text(
+                                'Welcome to AI Meal Planner',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: isLandscape ? 12 : 16),
+                              Text(
+                                _userProfile != null
+                                    ? 'Create a personalized meal plan based on your goals and preferences'
+                                    : 'Create your profile to get started with personalized meal plans',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: AppColors.textSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              if (_errorMessage != null) ...[
+                                SizedBox(height: isLandscape ? 12 : 16),
+                                Text(
+                                  _errorMessage!,
+                                  style: const TextStyle(
+                                    color: AppColors.errorColor,
+                                    fontSize: 14,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                              SizedBox(height: isLandscape ? 24 : 48),
+                              Button(
+                                text: 'Generate Meal Plan',
+                                onPressed: _navigateToGenerate,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isLandscape ? 24 : 32,
+                                  vertical: isLandscape ? 12 : 16,
+                                ),
+                                fontSize: isLandscape ? 16 : 18,
+                              ),
+                              if (_userProfile != null) ...[
+                                SizedBox(height: isLandscape ? 12 : 16),
+                                Button(
+                                  text: 'Edit Profile',
+                                  onPressed: _navigateToEditProfile,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isLandscape ? 24 : 32,
+                                    vertical: isLandscape ? 12 : 16,
+                                  ),
+                                  fontSize: isLandscape ? 16 : 18,
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ],
-                    const SizedBox(height: 48),
-                    Button(
-                      text: 'Generate Meal Plan',
-                      onPressed: _navigateToGenerate,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                      fontSize: 18,
                     ),
-                    if (_userProfile != null) ...[
-                      const SizedBox(height: 16),
-                      Button(
-                        text: 'Edit Profile',
-                        onPressed: _navigateToEditProfile,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        fontSize: 18,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
     );
   }

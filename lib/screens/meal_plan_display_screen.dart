@@ -7,14 +7,27 @@ class MealPlanDisplayScreen extends StatelessWidget {
 
   const MealPlanDisplayScreen({super.key, required this.mealPlan});
 
-  @override
-  Widget build(BuildContext context) {
+  Map<int, List<Meal>> _groupMealsByDay() {
     final mealsByDay = <int, List<Meal>>{};
     for (var meal in mealPlan.meals) {
       mealsByDay.putIfAbsent(meal.day, () => []).add(meal);
     }
+    return mealsByDay;
+  }
 
-    final sortedDays = mealsByDay.keys.toList()..sort();
+  List<int> _getSortedDays(Map<int, List<Meal>> mealsByDay) {
+    return mealsByDay.keys.toList()..sort();
+  }
+
+  Widget _buildDaySection(int day, Map<int, List<Meal>> mealsByDay) {
+    final meals = mealsByDay[day]!;
+    return DaySection(day: day, meals: meals);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mealsByDay = _groupMealsByDay();
+    final sortedDays = _getSortedDays(mealsByDay);
 
     return ScreenLayout(
       title: 'Meal Plan',
@@ -26,11 +39,8 @@ class MealPlanDisplayScreen extends StatelessWidget {
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: sortedDays.length,
-              itemBuilder: (context, index) {
-                final day = sortedDays[index];
-                final meals = mealsByDay[day]!;
-                return DaySection(day: day, meals: meals);
-              },
+              itemBuilder: (context, index) =>
+                  _buildDaySection(sortedDays[index], mealsByDay),
             ),
           ),
         ],

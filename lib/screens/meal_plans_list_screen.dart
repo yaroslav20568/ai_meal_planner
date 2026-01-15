@@ -57,6 +57,41 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
     Navigator.of(context).pushNamed('/meal-plan', arguments: mealPlan);
   }
 
+  Widget _buildMealPlanCard(MealPlan mealPlan) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: ListTile(
+        title: Text(
+          'Meal Plan - ${mealPlan.durationDays} days',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Text(
+              'Created: ${_formatDate(mealPlan.createdAt)}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Total calories: ${mealPlan.totalCalories.toStringAsFixed(0)} kcal',
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => _navigateToMealPlan(mealPlan),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenLayout(
@@ -116,41 +151,8 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: _mealPlans.length,
-                itemBuilder: (context, index) {
-                  final mealPlan = _mealPlans[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: ListTile(
-                      title: Text(
-                        'Meal Plan - ${mealPlan.durationDays} days',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 8),
-                          Text(
-                            'Created: ${_formatDate(mealPlan.createdAt)}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Total calories: ${mealPlan.totalCalories.toStringAsFixed(0)} kcal',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () => _navigateToMealPlan(mealPlan),
-                    ),
-                  );
-                },
+                itemBuilder: (context, index) =>
+                    _buildMealPlanCard(_mealPlans[index]),
               ),
             ),
     );
