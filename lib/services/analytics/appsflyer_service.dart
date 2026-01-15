@@ -14,10 +14,7 @@ class AppsFlyerService {
   final Logger _logger = Logger();
   bool _isInitialized = false;
 
-  Future<void> initialize({
-    String? devKey,
-    String? appId,
-  }) async {
+  Future<void> initialize({String? devKey, String? appId}) async {
     if (_isInitialized) {
       return;
     }
@@ -70,10 +67,7 @@ class AppsFlyerService {
     }
 
     try {
-      await _appsFlyerSdk!.logEvent(
-        eventName,
-        eventValues ?? {},
-      );
+      await _appsFlyerSdk!.logEvent(eventName, eventValues ?? {});
       _logger.d('AppsFlyer event logged: $eventName');
     } catch (e) {
       _logger.e('Failed to log AppsFlyer event $eventName: $e');
@@ -96,10 +90,7 @@ class AppsFlyerService {
     }
   }
 
-  Future<void> setUserProperty({
-    required String name,
-    String? value,
-  }) async {
+  Future<void> setUserProperty({required String name, String? value}) async {
     if (!isInitialized) {
       _logger.w('AppsFlyer not initialized, skipping user property: $name');
       return;
@@ -118,9 +109,7 @@ class AppsFlyerService {
     String? screenClass,
   }) async {
     if (!isInitialized) {
-      _logger.w(
-        'AppsFlyer not initialized, skipping screen view: $screenName',
-      );
+      _logger.w('AppsFlyer not initialized, skipping screen view: $screenName');
       return;
     }
 
@@ -135,5 +124,4 @@ class AppsFlyerService {
       _logger.e('Failed to log AppsFlyer screen view $screenName: $e');
     }
   }
-
 }

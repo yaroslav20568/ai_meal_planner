@@ -30,28 +30,17 @@ Future<void> main() async {
   }
 
   try {
-    await FirebaseAnalyticsService.instance.initialize();
-    await FirebaseAnalyticsService.instance.logAppOpen();
-  } catch (e) {
-    logger.e('Firebase Analytics initialization failed: $e');
-  }
-
-  try {
     final appmetricaApiKey = dotenv.env['APPMETRICA_API_KEY'];
-    await AppMetricaService.instance.initialize(apiKey: appmetricaApiKey);
-  } catch (e) {
-    logger.e('AppMetrica initialization failed: $e');
-  }
-
-  try {
     final appsflyerDevKey = dotenv.env['APPSFLYER_DEV_KEY'];
     final appsflyerAppId = dotenv.env['APPSFLYER_APP_ID'];
-    await AppsFlyerService.instance.initialize(
-      devKey: appsflyerDevKey,
-      appId: appsflyerAppId,
+
+    await AnalyticsService.instance.initialize(
+      appmetricaApiKey: appmetricaApiKey,
+      appsflyerDevKey: appsflyerDevKey,
+      appsflyerAppId: appsflyerAppId,
     );
   } catch (e) {
-    logger.e('AppsFlyer initialization failed: $e');
+    logger.e('Analytics initialization failed: $e');
   }
 
   runApp(const MyApp());
