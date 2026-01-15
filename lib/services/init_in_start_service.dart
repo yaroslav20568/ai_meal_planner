@@ -3,14 +3,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:logger/logger.dart';
 import 'package:ai_meal_planner/services/index.dart';
 
-class InitializationService {
+class InitInStartService {
   static final Logger _logger = Logger();
 
   static Future<void> initializeServices() async {
+    _logger.i(
+      '=== AI Meal Planner - InitInStartService - Services Initialization ===',
+    );
     await _loadEnvironmentVariables();
     await _initializeFirebase();
     await _initializeAnalytics();
     await _initializeAds();
+    _logger.i('=== InitInStartService - Services Initialization Complete ===');
   }
 
   static Future<void> _loadEnvironmentVariables() async {

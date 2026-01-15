@@ -7,7 +7,7 @@ import 'package:ai_meal_planner/navigation/index.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await InitializationService.initializeServices();
+  await InitInStartService.initializeServices();
 
   runApp(const MyApp());
 }

@@ -65,6 +65,7 @@ AI Meal Planner - это мобильное приложение на Flutter, �
   - `lib/widgets/layouts/` - виджеты компоновки (общий layout для экранов)
 - `lib/models/` - модели данных (UserProfile, Meal, MealPlan)
 - `lib/services/` - бизнес-логика и интеграции
+  - `init_in_start_service.dart` - сервис инициализации всех сервисов при старте приложения
   - `auth_service.dart` - сервис аутентификации через Firebase
   - `firestore_service.dart` - сервис для работы с Cloud Firestore
   - `meal_plan_service.dart` - сервис генерации планов питания
@@ -150,6 +151,7 @@ The project follows SOLID and KISS principles. Code is organized into the follow
   - `lib/widgets/layouts/` - layout widgets (common layout for screens)
 - `lib/models/` - data models (UserProfile, Meal, MealPlan)
 - `lib/services/` - business logic and integrations
+  - `init_in_start_service.dart` - service for initializing all services at app startup
   - `auth_service.dart` - authentication service via Firebase
   - `firestore_service.dart` - service for working with Cloud Firestore
   - `meal_plan_service.dart` - meal plan generation service
