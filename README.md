@@ -28,6 +28,11 @@ AI Meal Planner - это мобильное приложение на Flutter, �
 - Добавлено извлечение всех функций из верстки в методы класса для лучшей организации кода
 - Настроено название приложения "AI Meal Planner" для Android
 - Добавлена иконка приложения для Android
+- Интегрирована аналитика: Firebase Analytics, AppMetrica, AppsFlyer
+- Создан единый сервис аналитики для управления всеми системами
+- Добавлены кастомные события аналитики для отслеживания действий пользователей
+- Интегрирована реклама AdMob с баннерными объявлениями
+- Настроено автоматическое отслеживание экранов через RouteObserver
 
 ## Используемые пакеты
 
@@ -40,6 +45,10 @@ AI Meal Planner - это мобильное приложение на Flutter, �
 - `flutter_dotenv` - загрузка переменных окружения из .env файла
 - `logger` - логирование действий и ошибок
 - `cupertino_icons` - иконки для iOS стиля
+- `firebase_analytics` - аналитика Firebase
+- `appmetrica_plugin` - аналитика AppMetrica
+- `appsflyer_sdk` - аналитика и атрибуция AppsFlyer
+- `google_mobile_ads` - реклама AdMob
 - `flutter_lints` - линтеры для проверки кода (dev dependency)
 - `flutter_launcher_icons` - генерация иконок приложения (dev dependency)
 
@@ -60,9 +69,17 @@ AI Meal Planner - это мобильное приложение на Flutter, �
   - `firestore_service.dart` - сервис для работы с Cloud Firestore
   - `meal_plan_service.dart` - сервис генерации планов питания
   - `openai_service.dart` - сервис интеграции с OpenAI API
+  - `analytics/` - сервисы аналитики
+    - `analytics_service.dart` - единый сервис аналитики
+    - `firebase_analytics_service.dart` - обертка для Firebase Analytics
+    - `appmetrica_service.dart` - обертка для AppMetrica
+    - `appsflyer_service.dart` - обертка для AppsFlyer
+  - `ads/` - сервисы рекламы
+    - `ad_service.dart` - сервис управления рекламой AdMob
 - `lib/utils/` - утилиты (калькулятор калорий)
-- `lib/constants/` - константы (цвета приложения)
+- `lib/constants/` - константы (цвета приложения, Ad Unit ID)
 - `lib/navigation/` - навигация и маршруты приложения
+  - `route_observer.dart` - автоматическое отслеживание экранов для аналитики
 
 ---
 
@@ -96,6 +113,11 @@ AI Meal Planner is a Flutter mobile application that uses OpenAI API to generate
 - Added extraction of all functions from layout to class methods for better code organization
 - Configured application name "AI Meal Planner" for Android
 - Added application icon for Android
+- Integrated analytics: Firebase Analytics, AppMetrica, AppsFlyer
+- Created unified analytics service for managing all analytics systems
+- Added custom analytics events for tracking user actions
+- Integrated AdMob advertising with banner ads
+- Configured automatic screen tracking through RouteObserver
 
 ## Used Packages
 
@@ -108,6 +130,10 @@ AI Meal Planner is a Flutter mobile application that uses OpenAI API to generate
 - `flutter_dotenv` - loading environment variables from .env file
 - `logger` - logging actions and errors
 - `cupertino_icons` - icons for iOS style
+- `firebase_analytics` - Firebase Analytics
+- `appmetrica_plugin` - AppMetrica analytics
+- `appsflyer_sdk` - AppsFlyer analytics and attribution
+- `google_mobile_ads` - AdMob advertising
 - `flutter_lints` - linters for code checking (dev dependency)
 - `flutter_launcher_icons` - application icon generation (dev dependency)
 
@@ -128,6 +154,14 @@ The project follows SOLID and KISS principles. Code is organized into the follow
   - `firestore_service.dart` - service for working with Cloud Firestore
   - `meal_plan_service.dart` - meal plan generation service
   - `openai_service.dart` - OpenAI API integration service
+  - `analytics/` - analytics services
+    - `analytics_service.dart` - unified analytics service
+    - `firebase_analytics_service.dart` - Firebase Analytics wrapper
+    - `appmetrica_service.dart` - AppMetrica wrapper
+    - `appsflyer_service.dart` - AppsFlyer wrapper
+  - `ads/` - advertising services
+    - `ad_service.dart` - AdMob advertising management service
 - `lib/utils/` - utilities (calorie calculator)
-- `lib/constants/` - constants (application colors)
+- `lib/constants/` - constants (application colors, Ad Unit IDs)
 - `lib/navigation/` - application navigation and routes
+  - `route_observer.dart` - automatic screen tracking for analytics
