@@ -154,6 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   fontSize: isLandscape ? 16 : 18,
                                 ),
                               ],
+                              const SizedBox(height: 24),
+                              BannerAdWidget(
+                                adUnitId: AdConstants.bannerAdUnitId,
+                              ),
                             ],
                           ),
                         ),

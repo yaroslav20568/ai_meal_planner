@@ -107,9 +107,16 @@ class _MealPlanDisplayScreenState extends State<MealPlanDisplayScreen> {
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: sortedDays.length,
-            itemBuilder: (context, index) =>
-                _buildDaySection(sortedDays[index], mealsByDay),
+            itemCount: sortedDays.length + 1,
+            itemBuilder: (context, index) {
+              if (index == sortedDays.length) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: BannerAdWidget(adUnitId: AdConstants.bannerAdUnitId),
+                );
+              }
+              return _buildDaySection(sortedDays[index], mealsByDay);
+            },
           ),
         ),
       ],

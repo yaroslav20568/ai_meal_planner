@@ -154,9 +154,18 @@ class _MealPlansListScreenState extends State<MealPlansListScreen> {
               onRefresh: _loadMealPlans,
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: _mealPlans.length,
-                itemBuilder: (context, index) =>
-                    _buildMealPlanCard(_mealPlans[index]),
+                itemCount: _mealPlans.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _mealPlans.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: BannerAdWidget(
+                        adUnitId: AdConstants.bannerAdUnitId,
+                      ),
+                    );
+                  }
+                  return _buildMealPlanCard(_mealPlans[index]);
+                },
               ),
             ),
     );

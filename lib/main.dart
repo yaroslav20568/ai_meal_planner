@@ -43,6 +43,12 @@ Future<void> main() async {
     logger.e('Analytics initialization failed: $e');
   }
 
+  try {
+    await AdService.instance.initialize();
+  } catch (e) {
+    logger.e('AdMob initialization failed: $e');
+  }
+
   runApp(const MyApp());
 }
 
