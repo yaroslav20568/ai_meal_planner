@@ -68,6 +68,21 @@ jobs:
         ADMOB_BANNER_AD_UNIT_ID: ${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
         ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
       
+    - name: Create GoogleService-Info.plist from secrets
+      run: |
+        if [ -n "$GOOGLESERVICE_INFO_PLIST" ]; then
+          echo "📝 Creating GoogleService-Info.plist from GitHub Secrets..."
+          echo "$GOOGLESERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
+          echo "✅ GoogleService-Info.plist created successfully"
+          ls -lh ios/Runner/GoogleService-Info.plist
+        else
+          echo "⚠️  Warning: GOOGLESERVICE_INFO_PLIST secret is not set"
+          echo "⚠️  Firebase features may not work without this file"
+          echo "⚠️  To fix: Add GOOGLESERVICE_INFO_PLIST secret in GitHub repository settings"
+        fi
+      env:
+        GOOGLESERVICE_INFO_PLIST: ${{ secrets.GOOGLESERVICE_INFO_PLIST }}
+      
     - name: Cache CocoaPods
       uses: actions/cache@v4
       id: cocoapods-cache
