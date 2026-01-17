@@ -47,5 +47,7 @@
 	<true/>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>We use your data to provide personalized meal plans and improve our service. Your privacy is important to us.</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~3347511713</string>
 </dict>
 </plist>
