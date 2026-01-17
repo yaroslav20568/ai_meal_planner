@@ -1,0 +1,93 @@
+name: iOS Build for ATT Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.6'
+        channel: 'stable'
+        
+    - name: Flutter doctor
+      run: flutter doctor -v
+      
+    - name: Install dependencies
+      run: flutter pub get
+      
+    - name: Setup CocoaPods
+      run: |
+        sudo gem install cocoapods
+        cd ios && pod install && cd ..
+        
+    - name: List available simulators
+      run: xcrun simctl list devices available
+        
+    - name: Build iOS for simulator
+      run: |
+        flutter build ios --debug --simulator
+        
+    - name: Build .app bundle with Xcode
+      run: |
+        cd ios
+        xcodebuild -workspace Runner.xcworkspace \
+          -scheme Runner \
+          -configuration Debug \
+          -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+          -derivedDataPath build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          clean build
+      continue-on-error: true
+        
+    - name: Find built .app
+      run: |
+        find ios/build -name "Runner.app" -type d
+        
+    - name: Create .app zip archive
+      run: |
+        cd ios/build/Build/Products/Debug-iphonesimulator
+        if [ -d "Runner.app" ]; then
+          zip -r ../../../../../../Runner.app.zip Runner.app
+          echo "✅ Runner.app.zip created successfully"
+          ls -lh ../../../../../../Runner.app.zip
+        else
+          echo "❌ Runner.app not found, trying alternative location"
+          find ../../../../.. -name "Runner.app" -type d -exec zip -r ../../../../../../Runner.app.zip {} \;
+        fi
+        
+    - name: Upload iOS app artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-app-bundle
+        path: Runner.app.zip
+        retention-days: 7
+        if-no-files-found: error
+        
+    - name: Build summary
+      run: |
+        echo "## iOS Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Flutter dependencies installed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ CocoaPods installed" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ iOS app built for simulator" >> $GITHUB_STEP_SUMMARY
+        echo "- 📦 Artifact: Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
+        echo "2. Extract Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+        echo "3. Upload Runner.app to Appetize.io or BrowserStack" >> $GITHUB_STEP_SUMMARY
+        echo "4. Test ATT functionality on iOS simulator" >> $GITHUB_STEP_SUMMARY
