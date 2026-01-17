@@ -14,46 +14,21 @@ class ATTService {
   ATTService._();
 
   final Logger _logger = Logger();
-  ATTStatus? _currentStatus;
 
   Future<ATTStatus> requestTrackingAuthorization() async {
     if (!Platform.isIOS) {
       _logger.d('ATT is only supported on iOS, skipping request');
-      _currentStatus = ATTStatus.notSupported;
       return ATTStatus.notSupported;
     }
 
     try {
       final trackingStatus =
           await AppTrackingTransparency.requestTrackingAuthorization();
-      _currentStatus = _mapTrackingStatus(trackingStatus);
-      _logger.i('ATT authorization status: $_currentStatus');
-      return _currentStatus!;
+      final status = _mapTrackingStatus(trackingStatus);
+      _logger.i('ATT authorization status: $status');
+      return status;
     } catch (e) {
       _logger.e('Failed to request ATT authorization: $e');
-      _currentStatus = ATTStatus.notDetermined;
-      return ATTStatus.notDetermined;
-    }
-  }
-
-  Future<ATTStatus> getTrackingStatus() async {
-    if (!Platform.isIOS) {
-      _logger.d('ATT is only supported on iOS');
-      _currentStatus = ATTStatus.notSupported;
-      return ATTStatus.notSupported;
-    }
-
-    if (_currentStatus != null) {
-      return _currentStatus!;
-    }
-
-    try {
-      final trackingStatus =
-          await AppTrackingTransparency.trackingAuthorizationStatus;
-      _currentStatus = _mapTrackingStatus(trackingStatus);
-      return _currentStatus!;
-    } catch (e) {
-      _logger.e('Failed to get ATT status: $e');
       return ATTStatus.notDetermined;
     }
   }
@@ -72,8 +47,4 @@ class ATTService {
         return ATTStatus.notSupported;
     }
   }
-
-  ATTStatus? get currentStatus => _currentStatus;
-
-  bool get isAuthorized => _currentStatus == ATTStatus.authorized;
 }
