@@ -155,6 +155,41 @@ jobs:
         fi
         flutter build ios --debug --simulator --no-codesign
         
+    - name: Copy GoogleService-Info.plist to app bundle
+      working-directory: ${{ github.workspace }}
+      run: |
+        echo "🔍 Searching for Runner.app..."
+        APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
+        if [ -z "$APP_PATH" ]; then
+          echo "⚠️ Runner.app not found in build/ios, searching in all directories..."
+          APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" 2>/dev/null | head -1)
+        fi
+        
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ Runner.app not found, cannot copy GoogleService-Info.plist"
+          exit 1
+        fi
+        
+        echo "✅ Found Runner.app at: $APP_PATH"
+        
+        if [ -f ios/Runner/GoogleService-Info.plist ]; then
+          echo "📋 Copying GoogleService-Info.plist to app bundle..."
+          cp ios/Runner/GoogleService-Info.plist "$APP_PATH/GoogleService-Info.plist"
+          
+          if [ -f "$APP_PATH/GoogleService-Info.plist" ]; then
+            echo "✅ GoogleService-Info.plist copied successfully to app bundle"
+            ls -lh "$APP_PATH/GoogleService-Info.plist"
+            echo "📋 Verifying file content..."
+            head -5 "$APP_PATH/GoogleService-Info.plist" | grep -q "<?xml" && echo "✅ File is valid XML" || echo "⚠️  File may be corrupted"
+          else
+            echo "❌ Failed to copy GoogleService-Info.plist to app bundle"
+            exit 1
+          fi
+        else
+          echo "⚠️  Warning: GoogleService-Info.plist not found in ios/Runner/"
+          echo "⚠️  Firebase features may not work without this file"
+        fi
+        
     - name: Find and package .app bundle
       working-directory: ${{ github.workspace }}
       run: |
