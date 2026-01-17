@@ -122,33 +122,44 @@ jobs:
         flutter build ios --debug --simulator --no-codesign
         
     - name: Find and package .app bundle
+      working-directory: ${{ github.workspace }}
       run: |
-        APP_PATH=$(find build/ios -name "Runner.app" -type d | head -1)
+        echo "🔍 Searching for Runner.app..."
+        APP_PATH=$(find build/ios -name "Runner.app" -type d 2>/dev/null | head -1)
         if [ -z "$APP_PATH" ]; then
-          echo "❌ Runner.app not found in build/ios, searching..."
-          APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" | head -1)
+          echo "⚠️ Runner.app not found in build/ios, searching in all directories..."
+          APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" 2>/dev/null | head -1)
         fi
         
         if [ -z "$APP_PATH" ]; then
           echo "❌ Runner.app not found anywhere"
-          find . -name "*.app" -type d 2>/dev/null | head -5
+          echo "📋 Available .app files:"
+          find . -name "*.app" -type d 2>/dev/null | head -10
           exit 1
         fi
         
         echo "✅ Found Runner.app at: $APP_PATH"
+        echo "📦 Creating ZIP archive..."
         cd "$(dirname "$APP_PATH")"
-        zip -r ../../Runner.app.zip Runner.app
-        cd ../..
-        ls -lh Runner.app.zip
-        echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+        zip -r "$GITHUB_WORKSPACE/Runner.app.zip" Runner.app
+        cd "$GITHUB_WORKSPACE"
+        
+        if [ -f Runner.app.zip ]; then
+          ZIP_SIZE=$(ls -lh Runner.app.zip | awk '{print $5}')
+          echo "✅ Runner.app.zip created successfully: $ZIP_SIZE"
+          ls -lh Runner.app.zip
+        else
+          echo "❌ Failed to create Runner.app.zip"
+          exit 1
+        fi
         
     - name: Upload iOS app artifact
       uses: actions/upload-artifact@v4
       with:
         name: ios-app-bundle
-        path: Runner.app.zip
+        path: ${{ github.workspace }}/Runner.app.zip
         retention-days: 7
-        if-no-files-found: warn
+        if-no-files-found: error
         
     - name: Build summary
       if: always()
