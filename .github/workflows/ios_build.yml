@@ -10,7 +10,7 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     
     steps:
     - name: Checkout code
@@ -25,50 +25,122 @@ jobs:
     - name: Flutter doctor
       run: flutter doctor -v
       
+    - name: Cache Flutter dependencies
+      uses: actions/cache@v4
+      id: flutter-pub-cache
+      with:
+        path: |
+          ~/.pub-cache
+        key: ${{ runner.os }}-flutter-pub-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-pub-
+      
     - name: Install dependencies
       run: flutter pub get
+      
+    - name: Create .env file from secrets
+      run: |
+        echo "# Environment variables for iOS build" > .env
+        echo "# These are loaded from GitHub Secrets" >> .env
+        echo "# For ATT testing, APPSFLYER_DEV_KEY and APPSFLYER_APP_ID are recommended" >> .env
+        echo "" >> .env
+        
+        [ -n "$OPENAI_API_KEY" ] && echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env || echo "# OPENAI_API_KEY=not_set" >> .env
+        [ -n "$APPMETRICA_API_KEY" ] && echo "APPMETRICA_API_KEY=$APPMETRICA_API_KEY" >> .env || echo "# APPMETRICA_API_KEY=not_set" >> .env
+        [ -n "$APPSFLYER_DEV_KEY" ] && echo "APPSFLYER_DEV_KEY=$APPSFLYER_DEV_KEY" >> .env || echo "# APPSFLYER_DEV_KEY=not_set" >> .env
+        [ -n "$APPSFLYER_APP_ID" ] && echo "APPSFLYER_APP_ID=$APPSFLYER_APP_ID" >> .env || echo "# APPSFLYER_APP_ID=not_set" >> .env
+        [ -n "$ADMOB_APPLICATION_ID" ] && echo "ADMOB_APPLICATION_ID=$ADMOB_APPLICATION_ID" >> .env || echo "# ADMOB_APPLICATION_ID=not_set" >> .env
+        [ -n "$ADMOB_BANNER_AD_UNIT_ID" ] && echo "ADMOB_BANNER_AD_UNIT_ID=$ADMOB_BANNER_AD_UNIT_ID" >> .env || echo "# ADMOB_BANNER_AD_UNIT_ID=not_set" >> .env
+        [ -n "$ADMOB_INTERSTITIAL_AD_UNIT_ID" ] && echo "ADMOB_INTERSTITIAL_AD_UNIT_ID=$ADMOB_INTERSTITIAL_AD_UNIT_ID" >> .env || echo "# ADMOB_INTERSTITIAL_AD_UNIT_ID=not_set" >> .env
+        
+        echo "✅ .env file created"
+        VARIABLES_SET=$(grep -c '^[A-Z_]*=' .env || echo 0)
+        echo "📋 Environment variables set: $VARIABLES_SET/7"
+        if [ "$VARIABLES_SET" -lt 2 ]; then
+          echo "⚠️  Warning: APPSFLYER_DEV_KEY and APPSFLYER_APP_ID are recommended for ATT testing"
+        fi
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+        APPSFLYER_DEV_KEY: ${{ secrets.APPSFLYER_DEV_KEY }}
+        APPSFLYER_APP_ID: ${{ secrets.APPSFLYER_APP_ID }}
+        ADMOB_APPLICATION_ID: ${{ secrets.ADMOB_APPLICATION_ID }}
+        ADMOB_BANNER_AD_UNIT_ID: ${{ secrets.ADMOB_BANNER_AD_UNIT_ID }}
+        ADMOB_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.ADMOB_INTERSTITIAL_AD_UNIT_ID }}
+      
+    - name: Cache CocoaPods
+      uses: actions/cache@v4
+      id: cocoapods-cache
+      with:
+        path: |
+          ios/Pods
+          ~/Library/Caches/CocoaPods
+          ~/.cocoapods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
       
     - name: Setup CocoaPods
       run: |
         sudo gem install cocoapods
-        cd ios && pod install && cd ..
+        cd ios
+        if [ -f Podfile.lock ] && [ -d Pods ]; then
+          echo "✅ Using cached CocoaPods, skipping repo update"
+          pod install
+        else
+          echo "📦 Installing CocoaPods dependencies (first time or cache miss)"
+          pod install --repo-update
+        fi
+        cd ..
         
-    - name: List available simulators
-      run: xcrun simctl list devices available
-        
+    - name: Cache iOS build artifacts
+      uses: actions/cache@v4
+      id: ios-build-cache
+      with:
+        path: |
+          build/ios
+          ios/build
+          ios/.symlinks
+          ios/Flutter/Flutter.framework
+          ios/Flutter/Flutter.podspec
+          ios/Flutter/Generated.xcconfig
+          ios/Flutter/ephemeral
+          .dart_tool
+        key: ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock', 'ios/Podfile.lock', 'ios/Runner/Info.plist') }}
+        restore-keys: |
+          ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('ios/Podfile.lock') }}
+          ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock') }}
+          ${{ runner.os }}-ios-build-
+      
     - name: Build iOS for simulator
       run: |
-        flutter build ios --debug --simulator
-        
-    - name: Build .app bundle with Xcode
-      run: |
-        cd ios
-        xcodebuild -workspace Runner.xcworkspace \
-          -scheme Runner \
-          -configuration Debug \
-          -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-          -derivedDataPath build \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          clean build
-      continue-on-error: true
-        
-    - name: Find built .app
-      run: |
-        find ios/build -name "Runner.app" -type d
-        
-    - name: Create .app zip archive
-      run: |
-        cd ios/build/Build/Products/Debug-iphonesimulator
-        if [ -d "Runner.app" ]; then
-          zip -r ../../../../../../Runner.app.zip Runner.app
-          echo "✅ Runner.app.zip created successfully"
-          ls -lh ../../../../../../Runner.app.zip
+        if [ "${{ steps.ios-build-cache.outputs.cache-hit }}" == "true" ]; then
+          echo "✅ Using cached iOS build artifacts - incremental build"
         else
-          echo "❌ Runner.app not found, trying alternative location"
-          find ../../../../.. -name "Runner.app" -type d -exec zip -r ../../../../../../Runner.app.zip {} \;
+          echo "📦 Building iOS from scratch (cache miss)"
         fi
+        flutter build ios --debug --simulator --no-codesign
+        
+    - name: Find and package .app bundle
+      run: |
+        APP_PATH=$(find build/ios -name "Runner.app" -type d | head -1)
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ Runner.app not found in build/ios, searching..."
+          APP_PATH=$(find . -name "Runner.app" -type d -not -path "*/.*" | head -1)
+        fi
+        
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ Runner.app not found anywhere"
+          find . -name "*.app" -type d 2>/dev/null | head -5
+          exit 1
+        fi
+        
+        echo "✅ Found Runner.app at: $APP_PATH"
+        cd "$(dirname "$APP_PATH")"
+        zip -r ../../Runner.app.zip Runner.app
+        cd ../..
+        ls -lh Runner.app.zip
+        echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
         
     - name: Upload iOS app artifact
       uses: actions/upload-artifact@v4
@@ -76,18 +148,29 @@ jobs:
         name: ios-app-bundle
         path: Runner.app.zip
         retention-days: 7
-        if-no-files-found: error
+        if-no-files-found: warn
         
     - name: Build summary
+      if: always()
       run: |
         echo "## iOS Build Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Flutter dependencies installed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ CocoaPods installed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ iOS app built for simulator" >> $GITHUB_STEP_SUMMARY
-        echo "- 📦 Artifact: Runner.app.zip" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
-        echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
-        echo "2. Extract Runner.app.zip" >> $GITHUB_STEP_SUMMARY
-        echo "3. Upload Runner.app to Appetize.io or BrowserStack" >> $GITHUB_STEP_SUMMARY
-        echo "4. Test ATT functionality on iOS simulator" >> $GITHUB_STEP_SUMMARY
+        if [ -f Runner.app.zip ]; then
+          echo "- ✅ Flutter dependencies installed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ CocoaPods installed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ iOS app built for simulator" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Artifact: Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Cache Status:" >> $GITHUB_STEP_SUMMARY
+          echo "- Flutter pub cache: ${{ steps.flutter-pub-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- CocoaPods cache: ${{ steps.cocoapods-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- iOS build cache: ${{ steps.ios-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
+          echo "2. Extract Runner.app.zip" >> $GITHUB_STEP_SUMMARY
+          echo "3. Upload Runner.app to Appetize.io or BrowserStack" >> $GITHUB_STEP_SUMMARY
+          echo "4. Test ATT functionality on iOS simulator" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ⚠️ Build may have failed or was cancelled" >> $GITHUB_STEP_SUMMARY
+          echo "- Check logs above for details" >> $GITHUB_STEP_SUMMARY
+        fi
