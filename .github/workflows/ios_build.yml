@@ -93,31 +93,50 @@ jobs:
         fi
         cd ..
         
-    - name: Cache iOS build artifacts
+    - name: Cache Flutter build artifacts
       uses: actions/cache@v4
-      id: ios-build-cache
+      id: flutter-build-cache
       with:
         path: |
           build/ios
+          .dart_tool/flutter_build
+        key: ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('lib/**/*.dart') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-build-${{ hashFiles('**/pubspec.lock') }}-
+          ${{ runner.os }}-flutter-build-
+    
+    - name: Cache iOS Xcode artifacts
+      uses: actions/cache@v4
+      id: xcode-build-cache
+      with:
+        path: |
           ios/build
           ios/.symlinks
           ios/Flutter/Flutter.framework
           ios/Flutter/Flutter.podspec
           ios/Flutter/Generated.xcconfig
           ios/Flutter/ephemeral
-          .dart_tool
-        key: ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock', 'ios/Podfile.lock', 'ios/Runner/Info.plist') }}
+          ~/Library/Developer/Xcode/DerivedData
+        key: ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-${{ hashFiles('ios/Runner.xcodeproj/**') }}
         restore-keys: |
-          ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock') }}-${{ hashFiles('ios/Podfile.lock') }}
-          ${{ runner.os }}-ios-build-${{ hashFiles('**/pubspec.lock') }}
-          ${{ runner.os }}-ios-build-
+          ${{ runner.os }}-xcode-build-${{ hashFiles('ios/Podfile.lock') }}-
+          ${{ runner.os }}-xcode-build-
       
     - name: Build iOS for simulator
       run: |
-        if [ "${{ steps.ios-build-cache.outputs.cache-hit }}" == "true" ]; then
-          echo "✅ Using cached iOS build artifacts - incremental build"
+        FLUTTER_CACHE_HIT="${{ steps.flutter-build-cache.outputs.cache-hit }}"
+        XCODE_CACHE_HIT="${{ steps.xcode-build-cache.outputs.cache-hit }}"
+        
+        if [ "$FLUTTER_CACHE_HIT" == "true" ] && [ "$XCODE_CACHE_HIT" == "true" ]; then
+          echo "✅ Using cached iOS build artifacts - full incremental build"
+          echo "📦 Both Flutter and Xcode caches restored"
+          echo "⏱️ Expected build time: 2-5 minutes (incremental)"
+        elif [ "$FLUTTER_CACHE_HIT" == "true" ] || [ "$XCODE_CACHE_HIT" == "true" ]; then
+          echo "⚠️ Partial cache hit - some artifacts will be rebuilt"
+          echo "⏱️ Expected build time: 10-15 minutes (partial cache)"
         else
           echo "📦 Building iOS from scratch (cache miss)"
+          echo "⏱️ This will take ~20-25 minutes on first build"
         fi
         flutter build ios --debug --simulator --no-codesign
         
@@ -174,7 +193,8 @@ jobs:
           echo "### Cache Status:" >> $GITHUB_STEP_SUMMARY
           echo "- Flutter pub cache: ${{ steps.flutter-pub-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
           echo "- CocoaPods cache: ${{ steps.cocoapods-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
-          echo "- iOS build cache: ${{ steps.ios-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Flutter build cache: ${{ steps.flutter-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Xcode build cache: ${{ steps.xcode-build-cache.outputs.cache-hit }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY
