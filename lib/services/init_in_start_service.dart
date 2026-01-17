@@ -12,6 +12,7 @@ class InitInStartService {
     );
     await _loadEnvironmentVariables();
     await _initializeFirebase();
+    await _requestATTAuthorization();
     await _initializeAnalytics();
     await _initializeAds();
     _logger.i('=== InitInStartService - Services Initialization Complete ===');
@@ -35,6 +36,16 @@ class InitInStartService {
     } catch (e) {
       _logger.e('Firebase initialization failed: $e');
       rethrow;
+    }
+  }
+
+  static Future<void> _requestATTAuthorization() async {
+    try {
+      final attService = ATTService.instance;
+      final status = await attService.requestTrackingAuthorization();
+      _logger.i('ATT authorization requested, status: $status');
+    } catch (e) {
+      _logger.e('Failed to request ATT authorization: $e');
     }
   }
 
