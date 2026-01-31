@@ -6,6 +6,10 @@
 
 AI Meal Planner - это мобильное приложение на Flutter, которое использует OpenAI API для генерации персонализированных планов питания на основе профиля пользователя. Приложение позволяет пользователям создать профиль с персональными параметрами, указать диетические ограничения и аллергии, после чего получать индивидуальные планы питания с детальной информацией о блюдах, калориях и макронутриентах.
 
+## Демонстрация
+
+![Демонстрация работы](video/demo.gif)
+
 ## Что было сделано
 
 - Создана структура проекта с разделением на экраны, виджеты, модели, сервисы, утилиты, константы и навигацию
@@ -91,6 +95,10 @@ AI-powered personalized meal planning application for mobile devices.
 ## Project Description
 
 AI Meal Planner is a Flutter mobile application that uses OpenAI API to generate personalized meal plans based on user profile. The application allows users to create a profile with personal parameters, specify dietary restrictions and allergies, and then receive individual meal plans with detailed information about dishes, calories, and macronutrients.
+
+## Demo
+
+![Demo](video/demo.gif)
 
 ## What Was Done
 
